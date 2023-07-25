@@ -17,12 +17,13 @@ import (
 )
 
 type Config struct {
-	DBAddress       string
-	DBUsername      string
-	DBPassword      string
-	Databases       []string
-	DumpGenerations int
-	DumpDir         string // ダンプファイルを保存するディレクトリを追加
+        DBAddress       string
+        DBUsername      string
+        DBPassword      string
+        Databases       []string
+        DumpGenerations int
+        DumpDir         string // ダンプファイルを保存するディレクトリを追加
+        DBPort          string // データベースのポート番号を追加
 }
 
 func checkError(err error) {
@@ -32,67 +33,101 @@ func checkError(err error) {
 }
 
 func readConfig() (*Config, error) {
-	content, err := ioutil.ReadFile(".env.txt") // envファイルのパス
-	if err != nil {
-		return nil, err
-	}
+        content, err := ioutil.ReadFile(".env.txt") // envファイルのパス
+        if err != nil {
+                return nil, err
+        }
 
-	lines := strings.Split(string(content), "\n")
-	config := &Config{}
-	for _, line := range lines {
-		parts := strings.SplitN(line, "=", 2)
-		if len(parts) != 2 {
-			continue
-		}
-		key := strings.TrimSpace(parts[0])
-		value := strings.TrimSpace(parts[1])
+        lines := strings.Split(string(content), "\n")
+        config := &Config{}
+        for _, line := range lines {
+                parts := strings.SplitN(line, "=", 2)
+                if len(parts) != 2 {
+                        continue
+                }
+                key := strings.TrimSpace(parts[0])
+                value := strings.TrimSpace(parts[1])
 
-		switch key {
-		case "DB_ADDRESS":
-			config.DBAddress = value
-		case "DB_USERNAME":
-			config.DBUsername = value
-		case "DB_PASSWORD":
-			config.DBPassword = value
-		case "DATABASES":
-			config.Databases = strings.Split(value, ",")
-		case "DUMP_GENERATIONS":
-			gen, err := strconv.Atoi(value)
-			if err != nil {
-				return nil, err
-			}
-			config.DumpGenerations = gen
-		case "DUMP_DIR":
-			config.DumpDir = value // ダンプファイルを保存するディレクトリの指定を追加
-		}
-	}
+                switch key {
+                case "DATABASES":
+                        config.Databases = strings.Split(value, ",")
+                case "DUMP_GENERATIONS":
+                        gen, err := strconv.Atoi(value)
+                        if err != nil {
+                                return nil, err
+                        }
+                        config.DumpGenerations = gen
+                case "DUMP_DIR":
+                        config.DumpDir = value // ダンプファイルを保存するディレクトリの指定を追加
+                }
+        }
 
-	// ディレクトリが指定されていない場合は、実行ディレクトリを使用する
-	if config.DumpDir == "" {
-		wd, err := os.Getwd()
-		if err != nil {
-			return nil, err
-		}
-		config.DumpDir = wd
-	}
+        // .sql.cnfファイルの内容から接続情報を取得
+        sqlCnfContent, err := ioutil.ReadFile(".sql.cnf")
+        if err != nil {
+                return nil, err
+        }
 
-	return config, nil
+        // .sql.cnfファイルの内容から接続情報を取得してconfigに設定
+        lines = strings.Split(string(sqlCnfContent), "\n")
+        for _, line := range lines {
+                parts := strings.SplitN(line, "=", 2)
+                if len(parts) != 2 {
+                        continue
+                }
+                key := strings.TrimSpace(parts[0])
+                value := strings.TrimSpace(parts[1])
+
+                switch key {
+                case "user":
+                        config.DBUsername = value
+                case "password":
+                        config.DBPassword = value
+                case "host":
+                        config.DBAddress = value
+                case "port":
+                        config.DBPort = value
+                }
+        }
+
+        // ディレクトリが指定されていない場合は、実行ディレクトリを使用する
+        if config.DumpDir == "" {
+                wd, err := os.Getwd()
+                if err != nil {
+                        return nil, err
+                }
+                config.DumpDir = wd
+        }
+
+        return config, nil
+}
+
+func readSQLCnfFile() (string, error) {
+        content, err := ioutil.ReadFile(".sql.cnf")
+        if err != nil {
+                return "", err
+        }
+        return string(content), nil
+}
+
+func createMySQLDSN(config *Config) string {
+        return fmt.Sprintf("%s:%s@tcp(%s:%s)/", config.DBUsername, config.DBPassword, config.DBAddress, config.DBPort)
 }
 
 func runMySQLActiveCheck(config *Config) error {
-	// データベースに接続してみる
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/", config.DBUsername, config.DBPassword, config.DBAddress))
-	if err != nil {
-		fmt.Println("mysqlに接続できません")
-		return err
-	}
-	defer db.Close()
+        dsn := createMySQLDSN(config) // DSNを生成
+        db, err := sql.Open("mysql", dsn)
+        if err != nil {
+                fmt.Println("mysqlに接続できません")
+                return err
+        }
+        defer db.Close()
 
-	err = db.Ping()
-	if err != nil {
-		return err
-	}
-	return nil
+        err = db.Ping()
+        if err != nil {
+                return err
+        }
+        return nil
 }
 
 func runMySQLDump(config *Config) error {
@@ -172,8 +207,6 @@ func sortByModTime(files []os.FileInfo) {
 		return files[i].ModTime().Before(files[j].ModTime())
 	})
 }
-
-
 
 func main() {
 	config, err := readConfig()
