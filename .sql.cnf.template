@@ -1,0 +1,5 @@
+[client]
+user = <backup user name>   ex: mysqlbackup
+password = <backup user password>  ex: password
+host = <connection address>  ex: 192.168.0.1
+port = <connection port>   ex: 3006 or 6446
