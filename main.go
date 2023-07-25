@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	//"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -167,59 +166,6 @@ func cleanupOldDumps(config *Config) error {
 
         return nil
 }
-
-//func cleanupOldDumps(config *Config) error {
-//        files, err := ioutil.ReadDir(config.DumpDir)
-//        if err != nil {
-//                return err
-//        }
-//
-//        dumpFiles := []os.FileInfo{}
-//        for _, file := range files {
-//                if strings.HasPrefix(file.Name(), "dump_") && strings.HasSuffix(file.Name(), ".sql") {
-//                        dumpFiles = append(dumpFiles, file)
-//                }
-//        }
-//
-//        for _, file := range dumpFiles {
-//                fileName := file.Name()
-//                dbName := strings.TrimSuffix(strings.TrimPrefix(fileName, "dump_"), ".sql")
-//		fmt.Printf("ファイル名: %s, データベース名: %s\n", fileName, dbName)
-//                files, err := ioutil.ReadDir(config.DumpDir)
-//                if err != nil {
-//                        return err
-//                }
-//
-//                // dbNameに対応するファイルのみを取得して世代管理を行う
-//                dbDumpFiles := []os.FileInfo{}
-//                for _, f := range files {
-//                        if strings.HasPrefix(f.Name(), "dump_"+dbName) && strings.HasSuffix(f.Name(), ".sql") {
-//                                dbDumpFiles = append(dbDumpFiles, f)
-//                        }
-//                }
-//
-//		fmt.Println(len(dbDumpFiles))   //test
-//
-//                if len(dbDumpFiles) <= config.DumpGenerations {
-//                        continue
-//                }
-//
-//                // 古い順に並べ替え
-//                sortByModTime(dbDumpFiles)
-//		//fmt.Println(dbDumpFiles)   // test
-//
-//                // 古いファイルを削除
-//                for _, f := range dbDumpFiles[:len(dbDumpFiles)-config.DumpGenerations] {
-//                        err = os.Remove(filepath.Join(config.DumpDir, f.Name()))
-//                        if err != nil {
-//                                return err
-//                        }
-//                }
-//        }
-//
-//        return nil
-//}
-
 
 func sortByModTime(files []os.FileInfo) {
 	sort.Slice(files, func(i, j int) bool {
