@@ -4,7 +4,7 @@ execute mysqldump
 
 ## Overview
 
-Group Replication環境のmysqlデータベースにてmysqlrouterアドレス越しに取得するためのスクリプト。
+Group Replication環境のmysqlデータベースにてmysqlrouterアドレス越しに取得するためのスクリプト。  
 確認していないが、mysql単体向けにも動作は可能(なはず)
 
 実行環境からデータベースへ接続できること、以下に記すcnf中に設定するユーザがDBに作成されていること、あわせて権限が足りていることを前提とする。
@@ -12,12 +12,12 @@ Group Replication環境のmysqlデータベースにてmysqlrouterアドレス�
 ## Usage
 テンプレートファイルを編集し、リネームする
 
-.sql.cnf.template > .sql.cnf
+.sql.cnf.template > .sql.cnf  
 .env.txt.template > .env.txt
 
-Edit Examples
+Edit Examples  
 
-.sql.cnf
+- .sql.cnf
 ```.sql.cnf
 [client]
 user = mysqlbackup
@@ -27,13 +27,13 @@ port = 6446
 ```
 DB接続に必要な情報を記載する。
 
-.env.cnf
+- .env.cnf
 ```.env.cnf
 DATABASES=test,test2,mysql
 DUMP_GENERATIONS=2
 DUMP_DIR=/tmp/dump_directory
 ```
-取得するデータベース、保持世代数、dump保持ディレクトリパスを記載する。
+取得するデータベース、保持世代数、dump保持ディレクトリパスを記載する。  
 DATABASESはカンマ区切りで複数指定可能
 
 ## Requirement
