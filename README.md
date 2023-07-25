@@ -40,4 +40,13 @@ DATABASESはカンマ区切りで複数指定可能
 - mysql: Ver 8.0.33-0ubuntu0.22.04.2 for Linux on x86_64 
 - mysqldump:  Ver 8.0.33-0ubuntu0.22.04.2 for Linux on x86_64 ((Ubuntu))
 - MySQL Router:  Ver 8.0.33 for Linux on x86_64 (MySQL Community - GPL)
-- golang: version go1.13.8 linux/amd64
+- golang: version go1.13.8 linux/amd64 , go version go1.20.6 linux/amd64
+  - 手前環境の都合、1.13.8 or 1.20.6で動くことのみ確認 (1.20の方はgo mod init , go mod tidy)
+
+
+## Usage
+```
+$ go run main.go
+
+$ ls -l <DUMP_DIR>
+```
