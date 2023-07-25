@@ -15,7 +15,9 @@ Group Replication環境のmysqlデータベースにてmysqlrouterアドレス�
 .sql.cnf.template > .sql.cnf
 .env.txt.template > .env.txt
 
-examples
+Edit Examples
+
+.sql.cnf
 ```.sql.cnf
 [client]
 user = mysqlbackup
@@ -25,6 +27,7 @@ port = 6446
 ```
 DB接続に必要な情報を記載する。
 
+.env.cnf
 ```.env.cnf
 DATABASES=test,test2,mysql
 DUMP_GENERATIONS=2
