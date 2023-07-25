@@ -102,14 +102,6 @@ func readConfig() (*Config, error) {
         return config, nil
 }
 
-func readSQLCnfFile() (string, error) {
-        content, err := ioutil.ReadFile(".sql.cnf")
-        if err != nil {
-                return "", err
-        }
-        return string(content), nil
-}
-
 func createMySQLDSN(config *Config) string {
         return fmt.Sprintf("%s:%s@tcp(%s:%s)/", config.DBUsername, config.DBPassword, config.DBAddress, config.DBPort)
 }
