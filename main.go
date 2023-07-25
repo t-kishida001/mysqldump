@@ -48,7 +48,7 @@ func openLogFile(logDir string) (*os.File, error) {
 	return logFile, nil
 }
 
-// MainFunc: Setup Log file
+// MainFunc: Setup Initialize Log file
 func setupLogger() (*os.File, error) {
 	logDir, err := createLogDir()
 	if err != nil {
@@ -60,7 +60,7 @@ func setupLogger() (*os.File, error) {
 		return nil, fmt.Errorf("ログファイルのオープンに失敗しました: %s", err)
 	}
 
-	// set up logging to both file and standard output.
+	// set log output to both file and standard output
 	log.SetOutput(io.MultiWriter(logFile, os.Stdout))
 
 	return logFile, nil
