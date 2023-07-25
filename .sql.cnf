@@ -1,0 +1,5 @@
+[client]
+user = mysqlbackup
+password = password
+host = 192.168.0.1
+port = 6446
