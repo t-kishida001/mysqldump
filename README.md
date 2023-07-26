@@ -22,14 +22,14 @@ Edit Examples
 [client]
 user = mysqlbackup
 password = password
-host = 192.168.0.1
+host = 192.168.1.1
 port = 6446
 ```
 DB接続に必要な情報を記載する。
 
 - .env.cnf
 ```.env.cnf
-DATABASES=test,test2,mysql
+DATABASES=DB1,DB2,mysql
 DUMP_GENERATIONS=2
 DUMP_DIR=/tmp/dump_directory
 ```
