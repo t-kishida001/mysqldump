@@ -19,16 +19,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Config struct {
-        DBAddress       string
-        DBUsername      string
-        DBPassword      string
-        Databases       []string
-        DumpGenerations int
-        DumpDir         string
-        DBPort          string
-}
-
 // MainFunc: Checking for errors in the execution results
 func checkError(err error) {
 	if err != nil {
