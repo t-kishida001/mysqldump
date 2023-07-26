@@ -27,10 +27,10 @@ port = 6446
 ```
 DB接続に必要な情報を記載する。
 
-user: mysqldumpコマンドで指定する接続ユーザ  
-password: `user`で指定したユーザのパスワード  
-host: 接続アドレスorホスト名
-port: 接続ポート
+`user`		: mysqldumpコマンドで指定する接続ユーザ  
+`password`	: `user`で指定したユーザのパスワード  
+`host`		: 接続アドレスorホスト名
+`port`		: 接続ポート
 
 
 
@@ -40,11 +40,11 @@ DATABASES=DB1,DB2,mysql
 DUMP_GENERATIONS=2
 DUMP_DIR=/tmp/dump_directory
 ```
-取得するデータベース、保持世代数、dump保持ディレクトリパスを記載する。  
+取得するデータベース、保持世代数など記載する。  
 
-DATABASES: mysqldumpを取得するデータベース
-DUMP_GENERATIONS：保持世代数。この指定を超えたdumpファイルは古いものから削除される
-DUMP_DIR: dump格納パス。指定しなかった場合スクリプト実行ディレクトリに出力する
+`DATABASES`		: dumpを取得するデータベース。カンマ区切りで複数指定可能  
+`DUMP_GENERATIONS`	: 保持世代数。この指定を超えたdumpファイルは古いものから削除される  
+`DUMP_DIR`		: dump格納パス。指定しなかった場合スクリプト実行ディレクトリに出力する  
 
 DATABASESはカンマ区切りで複数指定可能
 
@@ -59,4 +59,4 @@ $ ls -l <DUMP_DIR>
 - mysql: Ver 8.0.33-0ubuntu0.22.04.2 for Linux on x86_64 
 - mysqldump:  Ver 8.0.33-0ubuntu0.22.04.2 for Linux on x86_64 ((Ubuntu))
 - MySQL Router:  Ver 8.0.33 for Linux on x86_64 (MySQL Community - GPL)
-- golang: version go1.13.8 linux/amd64 , go version go1.20.6 linux/amd64
+- golang: version go1.13.8 linux/amd64 , version go1.20.6 linux/amd64
