@@ -15,7 +15,7 @@ Group Replication環境のmysqlデータベースにてmysqlrouterアドレス�
 .sql.cnf.template > .sql.cnf  
 .env.txt.template > .env.txt
 
-Edit Examples  
+### Edit Examples  
 
 - .sql.cnf
 ```.sql.cnf
@@ -27,6 +27,13 @@ port = 6446
 ```
 DB接続に必要な情報を記載する。
 
+user: mysqldumpコマンドで指定する接続ユーザ  
+password: `user`で指定したユーザのパスワード  
+host: 接続アドレスorホスト名
+port: 接続ポート
+
+
+
 - .env.cnf
 ```.env.cnf
 DATABASES=DB1,DB2,mysql
@@ -34,6 +41,11 @@ DUMP_GENERATIONS=2
 DUMP_DIR=/tmp/dump_directory
 ```
 取得するデータベース、保持世代数、dump保持ディレクトリパスを記載する。  
+
+DATABASES: mysqldumpを取得するデータベース
+DUMP_GENERATIONS：保持世代数。この指定を超えたdumpファイルは古いものから削除される
+DUMP_DIR: dump格納パス。指定しなかった場合スクリプト実行ディレクトリに出力する
+
 DATABASESはカンマ区切りで複数指定可能
 
 ```bash
