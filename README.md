@@ -22,7 +22,7 @@ Edit Examples
 [client]
 user = mysqlbackup
 password = password
-host = 192.168.1.1
+host = 192.168.1.11
 port = 6446
 ```
 DB接続に必要な情報を記載する。
