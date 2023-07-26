@@ -9,12 +9,13 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
 	"mysqldump/pkg/logging"
+	"mysqldump/pkg/readconfig"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Config struct {
@@ -34,86 +35,13 @@ func checkError(err error) {
 	}
 }
 
-// MainFunc: Reading config files.
-func readConfig() (*Config, error) {
-	// reading .env.txt
-        content, err := ioutil.ReadFile(".env.txt") 
-        if err != nil {
-                return nil, err
-        }
-
-	// setting to config get .env.txt
-        lines := strings.Split(string(content), "\n")
-        config := &Config{}
-        for _, line := range lines {
-                parts := strings.SplitN(line, "=", 2)
-                if len(parts) != 2 {
-                        continue
-                }
-                key := strings.TrimSpace(parts[0])
-                value := strings.TrimSpace(parts[1])
-
-                switch key {
-                case "DATABASES":
-                        config.Databases = strings.Split(value, ",")
-                case "DUMP_GENERATIONS":
-                        gen, err := strconv.Atoi(value)
-                        if err != nil {
-                                return nil, err
-                        }
-                        config.DumpGenerations = gen
-                case "DUMP_DIR":
-                        config.DumpDir = value
-                }
-        }
-
-        // reading .sql.cnf
-        sqlCnfContent, err := ioutil.ReadFile(".sql.cnf")
-        if err != nil {
-                return nil, err
-        }
-
-	// setting to config get .sql.cnf
-        lines = strings.Split(string(sqlCnfContent), "\n")
-        for _, line := range lines {
-                parts := strings.SplitN(line, "=", 2)
-                if len(parts) != 2 {
-                        continue
-                }
-                key := strings.TrimSpace(parts[0])
-                value := strings.TrimSpace(parts[1])
-
-                switch key {
-                case "user":
-                        config.DBUsername = value
-                case "password":
-                        config.DBPassword = value
-                case "host":
-                        config.DBAddress = value
-                case "port":
-                        config.DBPort = value
-                }
-        }
-
-        // ff no directory is specified,current working directory will be used.
-        if config.DumpDir == "" {
-                wd, err := os.Getwd()
-                if err != nil {
-                        return nil, err
-                }
-                config.DumpDir = wd
-        }
-
-        return config, nil
-}
-
 // Subfunc runMySQLActiveCheck : Create MySQL DSN(Data Source Name)
-func createMySQLDSN(config *Config) string {
+func createMySQLDSN(config *readconfig.Config) string {
         return fmt.Sprintf("%s:%s@tcp(%s:%s)/", config.DBUsername, config.DBPassword, config.DBAddress, config.DBPort)
 }
 
 // Mainfunc: Check if it can connect to MySQL.
-func runMySQLActiveCheck(config *Config) error {
+func runMySQLActiveCheck(config *readconfig.Config) error {
         dsn := createMySQLDSN(config) // DSNを生成
         db, err := sql.Open("mysql", dsn)
         if err != nil {
@@ -130,7 +58,7 @@ func runMySQLActiveCheck(config *Config) error {
 }
 
 // Mainfunc: Running mysqldump
-func runMySQLDump(config *Config) error {
+func runMySQLDump(config *readconfig.Config) error {
 	for _, dbName := range config.Databases {
 		dumpCmd := exec.Command(
 			"mysqldump",
@@ -172,7 +100,7 @@ func sortByModTime(files []os.FileInfo) {
 }
 
 // Mainfunc: Generation management of dump files
-func cleanupOldDumps(config *Config) error {
+func cleanupOldDumps(config *readconfig.Config) error {
         files, err := ioutil.ReadDir(config.DumpDir)
         if err != nil {
                 return err
@@ -220,7 +148,7 @@ func main() {
 	defer logFile.Close()
 
 	// Read config
-	config, err := readConfig()
+	config, err := readconfig.ReadConfig()
 	checkError(err)
 
 	// MySQL Active check
