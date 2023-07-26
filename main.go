@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -26,45 +25,6 @@ type Config struct {
         DumpGenerations int
         DumpDir         string
         DBPort          string
-}
-
-// SubFunc setupLogger: Create Log dir
-func createLogDir() (string, error) {
-	logDir := filepath.Join(".", "logs")
-	if _, err := os.Stat(logDir); os.IsNotExist(err) {
-		if err := os.Mkdir(logDir, 0755); err != nil {
-			return "", err
-		}
-	}
-	return logDir, nil
-}
-
-// SubFunc setupLogger: Open log file "mysqldump.log"
-func openLogFile(logDir string) (*os.File, error) {
-	logFilePath := filepath.Join(logDir, "mysqldump.log")
-	logFile, err := os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return nil, err
-	}
-	return logFile, nil
-}
-
-// MainFunc: Setup Initialize Log file
-func setupLogger() (*os.File, error) {
-	logDir, err := createLogDir()
-	if err != nil {
-		return nil, fmt.Errorf("ログフォルダの作成に失敗しました: %s", err)
-	}
-
-	logFile, err := openLogFile(logDir)
-	if err != nil {
-		return nil, fmt.Errorf("ログファイルのオープンに失敗しました: %s", err)
-	}
-
-	// set log output to both file and standard output
-	log.SetOutput(io.MultiWriter(logFile, os.Stdout))
-
-	return logFile, nil
 }
 
 // MainFunc: Checking for errors in the execution results
