@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/sql"
+	//"database/sql"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,6 +14,7 @@ import (
 
 	"mysqldump/pkg/logging"
 	"mysqldump/pkg/readconfig"
+	"mysqldump/pkg/checkprocess"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -33,28 +34,6 @@ func checkError(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-// Subfunc runMySQLActiveCheck : Create MySQL DSN(Data Source Name)
-func createMySQLDSN(config *readconfig.Config) string {
-        return fmt.Sprintf("%s:%s@tcp(%s:%s)/", config.DBUsername, config.DBPassword, config.DBAddress, config.DBPort)
-}
-
-// Mainfunc: Check if it can connect to MySQL.
-func runMySQLActiveCheck(config *readconfig.Config) error {
-        dsn := createMySQLDSN(config) // DSNを生成
-        db, err := sql.Open("mysql", dsn)
-        if err != nil {
-                fmt.Println("mysqlに接続できません")
-                return err
-        }
-        defer db.Close()
-
-        err = db.Ping()
-        if err != nil {
-                return err
-        }
-        return nil
 }
 
 // Mainfunc: Running mysqldump
@@ -152,7 +131,7 @@ func main() {
 	checkError(err)
 
 	// MySQL Active check
-	err = runMySQLActiveCheck(config)
+	err = checkprocess.RunMySQLActiveCheck(config)
 	checkError(err)
 
 	// Running mysqldump
