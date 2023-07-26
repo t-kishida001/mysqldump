@@ -29,10 +29,8 @@ DB接続に必要な情報を記載する。
 
 `user`		: mysqldumpコマンドで指定する接続ユーザ  
 `password`	: `user`で指定したユーザのパスワード  
-`host`		: 接続アドレスorホスト名
-`port`		: 接続ポート
-
-
+`host`		: 接続アドレスorホスト名  
+`port`		: 接続ポート  
 
 - .env.cnf
 ```.env.cnf
