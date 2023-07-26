@@ -15,6 +15,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"mysqldump/pkg/logging"
 )
 
 type Config struct {
@@ -251,7 +252,8 @@ func cleanupOldDumps(config *Config) error {
 
 func main() {
 	// Setup logfile
-	logFile, err := setupLogger()
+	logFile, err := logging.SetupLogger()
+
 	if err != nil {
 		log.Fatalf("%s systemd[1]: %s", time.Now().Format("Jan 02 15:04:05"), err)
 	}
