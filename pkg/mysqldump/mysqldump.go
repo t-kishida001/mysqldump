@@ -14,7 +14,7 @@ func RunMySQLDump(config *readconfig.Config) error {
     for _, dbName := range config.Databases {
         dumpCmd := exec.Command(
             "mysqldump",
-            "--defaults-extra-file=/home/bbix/prj/mysqldump/.sql.cnf",
+            "--defaults-extra-file=.sql.cnf",
             "--databases",
             dbName,
             "--single-transaction",
