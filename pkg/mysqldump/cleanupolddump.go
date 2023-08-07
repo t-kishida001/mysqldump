@@ -27,8 +27,8 @@ func CleanupOldDumps(config *readconfig.Config) error {
 	dumpFilesMap := make(map[string][]os.FileInfo)
 
 	for _, file := range files {
-		if strings.HasPrefix(file.Name(), "dump_") && strings.HasSuffix(file.Name(), ".sql") {
-			dbName := strings.TrimSuffix(strings.TrimPrefix(file.Name(), "dump_"), ".sql")
+		if strings.HasPrefix(file.Name(), "dump_") && strings.HasSuffix(file.Name(), ".sql.gz") {
+			dbName := strings.TrimSuffix(strings.TrimPrefix(file.Name(), "dump_"), ".sql.gz")
 			dbName = strings.Split(dbName, "_")[0] // Remove the part after timestamp.
 			dumpFilesMap[dbName] = append(dumpFilesMap[dbName], file)
 		}
