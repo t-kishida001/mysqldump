@@ -7,6 +7,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"compress/gzip"
+	"io"
+
 	"mysqldump/pkg/readconfig"
 )
 
@@ -40,6 +43,34 @@ func RunMySQLDump(config *readconfig.Config) error {
             fmt.Println("mysqldumpの実行に失敗しました")
             return err
         }
+
+        // compress dump file
+        gzFileName := dumpFileName + ".gz"
+        gzFile, err := os.Create(gzFileName)
+        if err != nil {
+            fmt.Println("圧縮用ファイルの作成に失敗しました")
+            return err
+        }
+        defer gzFile.Close()
+
+        gzipWriter := gzip.NewWriter(gzFile)
+        defer gzipWriter.Close()
+
+        dumpFile.Seek(0, 0) // Reset file pointer to the beginning of the dump file
+        _, err = io.Copy(gzipWriter, dumpFile)
+        if err != nil {
+            fmt.Println("ファイルの圧縮に失敗しました")
+            return err
+        }
+
+        // Delete the original dump file after compression
+        err = os.Remove(dumpFileName)
+        if err != nil {
+            fmt.Println("元のダンプファイルの削除に失敗しました")
+            return err
+        }
+
+
     }
     return nil
 }
