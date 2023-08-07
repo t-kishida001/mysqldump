@@ -29,4 +29,3 @@ func RunMySQLActiveCheck(config *readconfig.Config) error {
 	}
 	return nil
 }
-
