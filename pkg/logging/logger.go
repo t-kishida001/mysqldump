@@ -47,4 +47,3 @@ func SetupLogger() (*os.File, error) {
 	
 	return logFile, nil
 }
-

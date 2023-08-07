@@ -1,14 +1,13 @@
 package mysqldump
 
 import (
+	"compress/gzip"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
-
-	"compress/gzip"
-	"io"
 
 	"mysqldump/pkg/readconfig"
 )
@@ -70,8 +69,6 @@ func RunMySQLDump(config *readconfig.Config) error {
             return err
         }
 
-
     }
     return nil
 }
-

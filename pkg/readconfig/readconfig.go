@@ -84,4 +84,3 @@ func ReadConfig() (*Config, error) {
 
 	return config, nil
 }
-

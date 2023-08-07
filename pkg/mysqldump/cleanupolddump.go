@@ -55,4 +55,3 @@ func CleanupOldDumps(config *readconfig.Config) error {
 
 	return nil
 }
-
