@@ -17,6 +17,7 @@ func RunMySQLDump(config *readconfig.Config) error {
         dumpCmd := exec.Command(
             "mysqldump",
             "--defaults-extra-file=.sql.cnf",
+            "--hex-blob",
             "--databases",
             dbName,
             "--single-transaction",
